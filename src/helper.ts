@@ -1,4 +1,5 @@
-const MutationObserver = window.MutationObserver// || window.WebKitMutationObserver || window.MozMutationObserver;
+//@ts-ignore
+const MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
 
 export const now = Date.now.bind(Date);
 export const on = (element: any, event: string, callback: Function) => {
