@@ -1,0 +1,48 @@
+<html>
+<head>
+  <title>monitorjs</title>
+  <script src="./monitor.js"></script>
+</head>
+
+<body>
+  <div id="root">
+    <div data-monitorjs-fs="main">
+      <div>
+        <div></div>
+      </div>
+      <img src="http://img4.imgtn.bdimg.com/it/u=3969086227,2877702049&fm=26&gp=0.jpg" />
+      <div></div>
+    </div>
+  </div>
+  <script>
+    var ob = new MutationObserver(function(...args){
+      console.log(args);
+    });
+
+    ob.observe(document.getElementById('root'), {
+      attributes: true,
+      childList: true,
+     // subtree: true
+    });
+
+    document.querySelector('[data-monitorjs-fs]').children[0].innerHTML = '<div>123</div>';
+  </script>
+  <script>
+    fetch('/user?name=123', {
+      method: 'GET'
+    });
+
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', '/user/123?name=33');
+    xhr.send();
+
+    let js = document.createElement('script');
+    js.src = '/user';
+    document.body.appendChild(js);
+
+    console.log(a + b);
+
+    
+  </script>
+</body>
+</html>

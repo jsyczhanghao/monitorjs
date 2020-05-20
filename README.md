@@ -24,7 +24,7 @@ window.monitorjs.init({
 ```html
 <div>
   <!--指定该元素为首屏监控元素，当这个元素内节点加载高度超过1个屏幕时，则判定首屏加载成功， 包括异步请求-->
-  <div data-monitorjs-fs>
+  <div data-monitorjs-fs="main-page/*指定一个页面唯一标识*/">
   balabala....
   </div>
 
