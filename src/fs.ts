@@ -34,6 +34,10 @@ const FSING_MARKER = '__$monitoring';
 let _inited = false;
 let _fs: Fs;
 
+function compute(time: number) {
+  return Math.round(time / 50) * 50;
+}
+
 function try2monitor() {
   if (_fs) {
     _fs.stop();
@@ -56,8 +60,8 @@ function try2monitor() {
     report(types.FS, {
       name: element.getAttribute('data-monitorjs-fs'),
       spaces,
-      ready,
-      duration: time - start
+      ready: compute(ready - start),
+      duration: compute(time - start)
     });
 
     _fs.stop();

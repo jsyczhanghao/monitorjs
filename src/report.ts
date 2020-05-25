@@ -9,10 +9,11 @@ export const report = (type: types, data: object) => {
   if (Math.random() > configs.get().percent) return ;
 
   let image = new Image();
-  image.src = configs.get().reportUrl + '?type=' + type + '&data=' + JSON.stringify({
+  image.src = configs.get().reportUrl + '?' + JSON.stringify({
+    type,
     ...data,
     namespace: configs.get().namespace
-  }) + '&timestamp=' + now();
+  });
   on(image, 'load error complete', () => {
     document.body.removeChild(image);
     image = null;

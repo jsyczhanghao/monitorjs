@@ -54,14 +54,14 @@ XMLHttpRequest.prototype.send = function (body: any) {
   return send.call(this, body);
 };
 
-let createElement = document.createElement;
-document.createElement = function (type: string) {
-  let node = createElement.call(this, type);
-  let start = now();
+// let createElement = document.createElement;
+// document.createElement = function (type: string) {
+//   let node = createElement.call(this, type);
+//   let start = now();
 
-  type == 'script' && on(node, 'load', () => ifTimeoutReport(start, types.LOAD_TIMEOUT, {
-    url: node.src
-  }));
+//   type == 'script' && on(node, 'load', () => ifTimeoutReport(start, types.LOAD_TIMEOUT, {
+//     url: node.src
+//   }));
 
-  return node;
-};
+//   return node;
+// };
