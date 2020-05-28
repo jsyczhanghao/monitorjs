@@ -4,6 +4,7 @@ declare const _default: {
         timeoutCheck: number;
         reportUrl: string;
         percent: number;
+        global: any;
         fs: {
             enable: boolean;
             root: string;

@@ -3,6 +3,8 @@ let configs = {
   timeoutCheck: 600,
   reportUrl: '/',
   percent: 1,
+  //@ts-ignore
+  global: typeof wx != 'undefined' ? wx : typeof my != 'undefined' ? my : null,
   fs: {
     enable: false,
     root: 'root',

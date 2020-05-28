@@ -1,5 +1,4 @@
 import './override';
-import './fs';
 declare const _default: {
     init: (cfgs: object) => void;
 };

@@ -7,61 +7,99 @@ import {
   ifTimeoutReport
 } from './report';
 import types from './types';
+import configs from './configs';
 
-on(window, 'error', (err: ErrorEvent) => {
-  report(types.RUNTIME_ERROR, {
-    error: err.message,
-    lcno: err.lineno + ':' + err.colno,
-    file: err.filename
+if (typeof window != 'undefined') {
+  on(window, 'error', (err: ErrorEvent) => {
+    report(types.RUNTIME_ERROR, {
+      error: err.message,
+      lcno: err.lineno + ':' + err.colno,
+      file: err.filename
+    });
   });
-});
-
-if ('fetch' in window) {
-  let old = window.fetch;
-  window.fetch = function (url, options) {
-    let start = now();
-    let request: any = old(url, options);
-
-    if (options.body instanceof FormData) return request;
-
-    request.finally(() => ifTimeoutReport(start, types.LOAD_TIMEOUT, {
-      url,
-      options
-    }));
-    return request;
-  };
-}
-
-let oldOpen = XMLHttpRequest.prototype.open;
-let send = XMLHttpRequest.prototype.send;
-
-XMLHttpRequest.prototype.open = function (method: string, url: string, ...args: any[]) {
-  let start = now();
-  on(this, 'loadend', () => !this.__$isUploadType && ifTimeoutReport(start, types.LOAD_TIMEOUT, {
-    url,
-    options: {
-      method
-    }
-  }));
-  return oldOpen.call(this, method, url, ...args);
-};
-
-XMLHttpRequest.prototype.send = function (body: any) {
-  if (body instanceof FormData) {
-    this.__$isUploadType = true;
+  
+  if ('fetch' in window) {
+    let old = window.fetch;
+    window.fetch = function (url, options) {
+      let start = now();
+      let request: any = old(url, options);
+  
+      if (options.body instanceof FormData) return request;
+  
+      request.finally(() => ifTimeoutReport(start, types.LOAD_TIMEOUT, {
+        url,
+        options
+      }));
+      return request;
+    };
   }
+  
+  let oldOpen = XMLHttpRequest.prototype.open;
+  let send = XMLHttpRequest.prototype.send;
+  
+  XMLHttpRequest.prototype.open = function (method: string, url: string, ...args: any[]) {
+    let start = now();
+    on(this, 'loadend', () => !this.__$isUploadType && ifTimeoutReport(start, types.LOAD_TIMEOUT, {
+      url,
+      options: {
+        method
+      }
+    }));
+    return oldOpen.call(this, method, url, ...args);
+  };
+  
+  XMLHttpRequest.prototype.send = function (body: any) {
+    if (body instanceof FormData) {
+      this.__$isUploadType = true;
+    }
+  
+    return send.call(this, body);
+  };
+  
+  // let createElement = document.createElement;
+  // document.createElement = function (type: string) {
+  //   let node = createElement.call(this, type);
+  //   let start = now();
+  
+  //   type == 'script' && on(node, 'load', () => ifTimeoutReport(start, types.LOAD_TIMEOUT, {
+  //     url: node.src
+  //   }));
+  
+  //   return node;
+  // };
+} else {
+  //mini
+  let global = configs.get().global;
 
-  return send.call(this, body);
-};
+  global.onError(function (err: string) {
+    report(types.RUNTIME_ERROR, {
+      error: err,
+      lcno: '0:0',
+      file: ''
+    });
+  });
 
-// let createElement = document.createElement;
-// document.createElement = function (type: string) {
-//   let node = createElement.call(this, type);
-//   let start = now();
+  let request = global.request;
+  let x = function ({complete, url, ...params}) {
+    let start = now();
 
-//   type == 'script' && on(node, 'load', () => ifTimeoutReport(start, types.LOAD_TIMEOUT, {
-//     url: node.src
-//   }));
-
-//   return node;
-// };
+    return request({
+      url,
+      ...params,
+      complete: function (...args: any) {
+        ifTimeoutReport(start, types.LOAD_TIMEOUT, {
+          url,
+          options: {
+            data: params.data,
+            method: params.method
+          }
+        });
+        complete && complete(...args);
+      }
+    })
+  };
+  Object.defineProperty(global, 'request', {
+    ...Object.getOwnPropertyDescriptor(global, 'request'),
+    get: () => x,
+  });
+}

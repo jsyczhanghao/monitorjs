@@ -6,19 +6,27 @@ import configs from './configs';
 import types from './types';
 
 export const report = (type: types, data: object) => {
-  if (Math.random() > configs.get().percent) return ;
+  if (Math.random() > configs.get().percent) return;
 
-  let image = new Image();
-  image.src = configs.get().reportUrl + '?' + JSON.stringify({
+  let url = configs.get().reportUrl + '?' + JSON.stringify({
     type,
     ...data,
     namespace: configs.get().namespace
   });
-  on(image, 'load error complete', () => {
-    document.body.removeChild(image);
-    image = null;
-  });
-  document.body.appendChild(image);
+
+  if (configs.get().global) {
+    configs.get().global.request({
+      url
+    });
+  } else {
+    let image = new Image();
+    image.src = url;
+    on(image, 'load error complete', () => {
+      document.body.removeChild(image);
+      image = null;
+    });
+    document.body.appendChild(image);
+  }
 };
 
 export const ifTimeoutReport = (time: number, type: types, data: object) => {

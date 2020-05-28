@@ -1,6 +1,3 @@
-//@ts-ignore
-const MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
-
 export const now = Date.now.bind(Date);
 export const on = (element: any, event: string, callback: Function) => {
   event.split(' ').forEach((e) => {
@@ -9,7 +6,8 @@ export const on = (element: any, event: string, callback: Function) => {
 };
 
 export const observer = (target: HTMLElement, callback: MutationCallback, subtree: boolean = false) => {
-  const observer = new MutationObserver(callback);
+  //@ts-ignore
+  const observer = new (window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver)(callback);
   observer.observe(target, {
     childList: true,
     subtree
