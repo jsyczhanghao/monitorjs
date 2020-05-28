@@ -1,8 +1,9 @@
 import configs from './configs';
 import './override';
+import {mini} from './helper';
 import fs, {reportFs} from './fs';
 
-!configs.get().global && fs();
+!mini && fs();
 
 export default {
   init: configs.set,

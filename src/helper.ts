@@ -18,3 +18,5 @@ export const observer = (target: HTMLElement, callback: MutationCallback, subtre
 export const $ = (selector: string) : HTMLElement => {
   return document.querySelector(selector);
 }
+
+export const mini = typeof window == 'undefined';

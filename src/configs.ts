@@ -4,7 +4,7 @@ let configs = {
   reportUrl: '/',
   percent: 1,
   //@ts-ignore
-  global: typeof window != 'undefined' ? window : typeof wx != 'undefined' ? wx : typeof my != 'undefined' ? my : null,
+  global: typeof wx != 'undefined' ? wx : typeof my != 'undefined' ? my : null,
   fs: {
     enable: false,
     root: 'root',

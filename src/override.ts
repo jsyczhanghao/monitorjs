@@ -1,6 +1,7 @@
 import {
   now,
-  on
+  on,
+  mini
 } from './helper';
 import {
   report,
@@ -9,7 +10,7 @@ import {
 import types from './types';
 import configs from './configs';
 
-if (typeof window != 'undefined') {
+if (!mini) {
   on(window, 'error', (err: ErrorEvent) => {
     report(types.RUNTIME_ERROR, {
       error: err.message,

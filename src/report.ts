@@ -1,6 +1,7 @@
 import {
   now,
-  on
+  on,
+  mini
 } from './helper';
 import configs from './configs';
 import types from './types';
@@ -14,7 +15,7 @@ export const report = (type: types, data: object) => {
     namespace: configs.get().namespace
   });
 
-  if (configs.get().global) {
+  if (mini) {
     configs.get().global.request({
       url
     });
