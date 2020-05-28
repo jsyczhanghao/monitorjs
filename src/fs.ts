@@ -8,6 +8,19 @@ import configs from './configs';
 import { report } from './report';
 import types from './types';
 
+function compute(time: number) {
+  return Math.round(time / 50) * 50;
+}
+
+export const reportFs = function (name: string, duration: number = 0, ready: number = 0, spaces = []) {
+  report(types.FS, {
+    name,
+    spaces,
+    duration: compute(duration),
+    ready: compute(ready)
+  });
+};
+
 export default () => {
   let query = location.href.match(new RegExp(`${configs.get().fs.startParam}=(\\d+)`));
   let navigationStart: number = query ? Number(query[1]) : performance.timing.navigationStart;
@@ -35,10 +48,6 @@ export default () => {
   let _inited = false;
   let _fs: Fs;
 
-  function compute(time: number) {
-    return Math.round(time / 50) * 50;
-  }
-
   function try2monitor() {
     if (_fs) {
       _fs.stop();
@@ -58,13 +67,7 @@ export default () => {
     _inited = true;
 
     _fs = new Fs(element, (time: number, spaces: []) => {
-      report(types.FS, {
-        name: element.getAttribute('data-monitorjs-fs'),
-        spaces,
-        ready: compute(ready - start),
-        duration: compute(time - start)
-      });
-
+      reportFs(element.getAttribute('data-monitorjs-fs'), time - start, ready - start, spaces);
       _fs.stop();
       _fs = null;
     });
