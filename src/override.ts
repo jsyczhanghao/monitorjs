@@ -26,11 +26,13 @@ if (!mini) {
       let request: any = old(url, options);
   
       if (options.body instanceof FormData) return request;
-  
-      request.finally(() => ifTimeoutReport(start, types.LOAD_TIMEOUT, {
+
+      let f = () => ifTimeoutReport(start, types.LOAD_TIMEOUT, {
         url,
         options
-      }));
+      });
+
+      request.then(f, f);
       return request;
     };
   }
