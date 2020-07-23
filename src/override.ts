@@ -21,7 +21,7 @@ if (!mini) {
   
   if ('fetch' in window) {
     let old = window.fetch;
-    window.fetch = function (url, options) {
+    window.fetch = function (url, options={}) {
       let start = now();
       let request: any = old(url, options);
   
