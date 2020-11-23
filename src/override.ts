@@ -101,8 +101,14 @@ if (!mini) {
       }
     })
   };
-  Object.defineProperty(global, 'request', {
-    ...Object.getOwnPropertyDescriptor(global, 'request'),
-    get: () => x,
-  });
+  let descriptor=Object.getOwnPropertyDescriptor(global, 'request');
+  if(descriptor.get){
+    descriptor.get=()=>x;
+  }
+  if(descriptor.value){
+    descriptor.value=(params)=>{
+      return  x(params);
+    };
+  }
+  Object.defineProperty(global, 'request',descriptor);
 }
